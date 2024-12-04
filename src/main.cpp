@@ -65,19 +65,50 @@ int main() {
     // Generates Heap and Midi files
     std::string midiDir = "../resources/DATABASE";
     MidiCollection midiCollection(midiDir);
+    Heap heap(midiDir);
+
+    heap.insertIntoHeap("Easy");
+    heap.buildMinHeap();
+    std::string EasyMinHeap = heap.getAllSongInfo();
+    heap.clearMinHeap();
+
+    heap.insertIntoHeap("Easy");
+    heap.buildMaxHeap();
+    std::string EasyMaxHeap = heap.getAllSongInfo();
+    heap.clearMaxHeap();
+
+    heap.insertIntoHeap("Intermediate");
+    heap.buildMinHeap();
+    std::string IntermediateMinHeap = heap.getAllSongInfo();
+    heap.clearMinHeap();
+
+    heap.insertIntoHeap("Intermediate");
+    heap.buildMaxHeap();
+    std::string IntermediateMaxHeap = heap.getAllSongInfo();
+    heap.clearMaxHeap();
+
+    heap.insertIntoHeap("Hard");
+    heap.buildMinHeap();
+    std::string HardMinHeap = heap.getAllSongInfo();
+    heap.clearMinHeap();
+
+    heap.insertIntoHeap("Hard");
+    heap.buildMaxHeap();
+    std::string HardMaxHeap = heap.getAllSongInfo();
+    heap.clearMaxHeap();
 
     // States
     enum class State { Menu, Easy, Intermediate, Hard, EasyMaxHeap, EasyMinHeap, IntermediateMinHeap, IntermediateMaxHeap, HardMaxHeap, HardMinHeap };
     State currentState = State::Menu;
 
     // Window dimensions
-    const float WINDOW_WIDTH = 1920.0f;
-    const float WINDOW_HEIGHT = 1080.0f;
+    const float WINDOW_WIDTH = window.getSize().x;
+    const float WINDOW_HEIGHT = window.getSize().y;
 
-    // Button dimensions
-    const float BUTTON_WIDTH = 310.0f;
-    const float BUTTON_HEIGHT = 125.0f;
-    const float INTBUTTON_WIDTH = 480.0f;
+    // Button dimensions (as percentages of window size)
+    const float BUTTON_WIDTH = WINDOW_WIDTH * 0.16f;
+    const float BUTTON_HEIGHT = WINDOW_HEIGHT * 0.12f;
+    const float INTBUTTON_WIDTH = WINDOW_WIDTH * 0.25f;
 
     // Calculate positions for buttons
     float windowCenterX = WINDOW_WIDTH / 2.0f;
@@ -88,45 +119,63 @@ int main() {
     easyButton.setSize(sf::Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
     intermediateButton.setSize(sf::Vector2f(INTBUTTON_WIDTH, BUTTON_HEIGHT));
     hardButton.setSize(sf::Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
-    maxHeap.setSize(sf::Vector2f(1000,100));
-    minHeap.setSize(sf::Vector2f(1000,100));
-    backButton.setSize(sf::Vector2f(100, 50));
-    backButton.setPosition(20, 20);
-    backText.setPosition(backButton.getPosition().x + backButton.getSize().x / 2 - backText.getLocalBounds().width / 2, backButton.getPosition().y + backButton.getSize().y / 2 - backText.getLocalBounds().height / 2 - 10);
+    maxHeap.setSize(sf::Vector2f(WINDOW_WIDTH * 0.52f, WINDOW_HEIGHT * 0.09f));
+    minHeap.setSize(sf::Vector2f(WINDOW_WIDTH * 0.52f, WINDOW_HEIGHT * 0.09f));
+    backButton.setSize(sf::Vector2f(WINDOW_WIDTH * 0.05f, WINDOW_HEIGHT * 0.05f));
 
     easyButton.setPosition(windowCenterX - buttonSpacing - BUTTON_WIDTH, buttonY);
     intermediateButton.setPosition(windowCenterX - INTBUTTON_WIDTH / 2, buttonY);
     hardButton.setPosition(windowCenterX + buttonSpacing, buttonY);
-    maxHeap.setPosition(450, 400);
-    minHeap.setPosition(450, 553);
+    maxHeap.setPosition(WINDOW_WIDTH * 0.24f, WINDOW_HEIGHT * 0.37f);
+    minHeap.setPosition(WINDOW_WIDTH * 0.24f, WINDOW_HEIGHT * 0.51f);
+    backButton.setPosition(WINDOW_WIDTH * 0.01f, WINDOW_HEIGHT * 0.02f);
+
+    // Set text sizes relative to window height
+    easyText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.05f));
+    intermediateText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.05f));
+    hardText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.05f));
+    backText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.02f));
+    welcomeText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.125f));
+    explanationText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.07f));
+    explanatitonText2.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.065f));
+    maxHeapText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.046f));
+    minHeapText.setCharacterSize(static_cast<unsigned int>(WINDOW_HEIGHT * 0.046f));
+
+    // Set text positions
+    sf::Text songText;
+    songText.setPosition(
+        window.getSize().x / 2.0f - songText.getLocalBounds().width / 2.0f,
+        window.getSize().y / 2.0f - songText.getLocalBounds().height / 2.0f
+    );
 
     // Set text positions
     easyText.setPosition(
         easyButton.getPosition().x + easyButton.getSize().x / 2 - easyText.getLocalBounds().width / 2,
-        easyButton.getPosition().y + easyButton.getSize().y / 2 - easyText.getLocalBounds().height / 2 - 15
+        easyButton.getPosition().y + easyButton.getSize().y / 2 - easyText.getLocalBounds().height / 2
     );
     intermediateText.setPosition(
         intermediateButton.getPosition().x + intermediateButton.getSize().x / 2 - intermediateText.getLocalBounds().width / 2,
-        intermediateButton.getPosition().y + intermediateButton.getSize().y / 2 - intermediateText.getLocalBounds().height / 2 - 15
+        intermediateButton.getPosition().y + intermediateButton.getSize().y / 2 - intermediateText.getLocalBounds().height / 2
     );
     hardText.setPosition(
         hardButton.getPosition().x + hardButton.getSize().x / 2 - hardText.getLocalBounds().width / 2,
-        hardButton.getPosition().y + hardButton.getSize().y / 2 - hardText.getLocalBounds().height / 2 - 15
+        hardButton.getPosition().y + hardButton.getSize().y / 2 - hardText.getLocalBounds().height / 2
     );
-
+    backText.setPosition(
+        backButton.getPosition().x + backButton.getSize().x / 2 - backText.getLocalBounds().width / 2,
+        backButton.getPosition().y + backButton.getSize().y / 2 - backText.getLocalBounds().height / 2
+    );
+    welcomeText.setPosition(WINDOW_WIDTH * 0.19f, WINDOW_HEIGHT * 0.09f);
+    explanationText.setPosition(WINDOW_WIDTH * 0.26f, WINDOW_HEIGHT * 0.32f);
+    explanatitonText2.setPosition(WINDOW_WIDTH * 0.20f, WINDOW_HEIGHT * 0.42f);
     maxHeapText.setPosition(
         maxHeap.getPosition().x + maxHeap.getSize().x / 2 - maxHeapText.getLocalBounds().width / 2,
-        maxHeap.getPosition().y + maxHeap.getSize().y / 2 - maxHeapText.getLocalBounds().height / 2 - 15
+        maxHeap.getPosition().y + maxHeap.getSize().y / 2 - maxHeapText.getLocalBounds().height / 2
     );
-
     minHeapText.setPosition(
         minHeap.getPosition().x + minHeap.getSize().x / 2 - minHeapText.getLocalBounds().width / 2,
-        minHeap.getPosition().y + minHeap.getSize().y / 2 - minHeapText.getLocalBounds().height / 2 - 15
+        minHeap.getPosition().y + minHeap.getSize().y / 2 - minHeapText.getLocalBounds().height / 2
     );
-
-    welcomeText.setPosition(373, 100);
-    explanationText.setPosition(501,350);
-    explanatitonText2.setPosition(386,450);
 
     // Text styles
     easyText.setFillColor(sf::Color::Black);
@@ -149,24 +198,9 @@ int main() {
     music.setLoop(true);
     music.setVolume(100);
 
-    // Fade Overlay to make it pretty
-    sf::RectangleShape fadeOverlay(sf::Vector2f(window.getSize().x, window.getSize().y));
-    sf::Texture fadeTexture;
-    fadeTexture.create(window.getSize().x, window.getSize().y);
-    sf::Image fadeImage;
-    fadeImage.create(window.getSize().x, window.getSize().y, sf::Color::Transparent);
-    for (unsigned int x = 0; x < window.getSize().x; ++x) {
-        for (unsigned int y = 0; y < window.getSize().y; ++y) {
-            float distToEdge = std::min({static_cast<float>(x), static_cast<float>(y),
-                                         static_cast<float>(window.getSize().x - x),
-                                         static_cast<float>(window.getSize().y - y)});
-            float fadeFactor = std::min(1.0f, distToEdge / (std::min(window.getSize().x, window.getSize().y) * 0.25f));
-            sf::Uint8 alpha = static_cast<sf::Uint8>(255 * (1.0f - fadeFactor));
-            fadeImage.setPixel(x, y, sf::Color(0, 0, 0, alpha));
-        }
-    }
-    fadeTexture.loadFromImage(fadeImage);
-    fadeOverlay.setTexture(&fadeTexture);
+    // Scrolling
+    float scrollOffset = 0.0f;
+    const float scrollSpeed = 30.0f;
 
     // Main loop
     sf::Clock clock;
@@ -215,6 +249,79 @@ int main() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+            if (event.type == sf::Event::Resized) {
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
+
+                // Update button sizes relative to the new window size
+                const float BUTTON_WIDTH = event.size.width * 0.16f;
+                const float BUTTON_HEIGHT = event.size.height * 0.12f;
+                const float INTBUTTON_WIDTH = event.size.width * 0.25f;
+
+                easyButton.setSize(sf::Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
+                intermediateButton.setSize(sf::Vector2f(INTBUTTON_WIDTH, BUTTON_HEIGHT));
+                hardButton.setSize(sf::Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
+                maxHeap.setSize(sf::Vector2f(event.size.width * 0.52f, event.size.height * 0.09f));
+                minHeap.setSize(sf::Vector2f(event.size.width * 0.52f, event.size.height * 0.09f));
+                backButton.setSize(sf::Vector2f(event.size.width * 0.05f, event.size.height * 0.05f));
+
+                // Update positions based on new window size
+                float windowCenterX = event.size.width / 2.0f;
+                float buttonY = event.size.height * 0.6f;
+                float buttonSpacing = event.size.width * 0.15f;
+
+                easyButton.setPosition(windowCenterX - buttonSpacing - BUTTON_WIDTH, buttonY);
+                intermediateButton.setPosition(windowCenterX - INTBUTTON_WIDTH / 2, buttonY);
+                hardButton.setPosition(windowCenterX + buttonSpacing, buttonY);
+                maxHeap.setPosition(event.size.width * 0.24f, event.size.height * 0.37f);
+                minHeap.setPosition(event.size.width * 0.24f, event.size.height * 0.51f);
+                backButton.setPosition(event.size.width * 0.01f, event.size.height * 0.02f);
+
+                // Recalculate text positions after resizing
+                easyText.setPosition(
+                    easyButton.getPosition().x + easyButton.getSize().x / 2 - easyText.getLocalBounds().width / 2,
+                    easyButton.getPosition().y + easyButton.getSize().y / 2 - easyText.getLocalBounds().height / 2
+                );
+                intermediateText.setPosition(
+                    intermediateButton.getPosition().x + intermediateButton.getSize().x / 2 - intermediateText.getLocalBounds().width / 2,
+                    intermediateButton.getPosition().y + intermediateButton.getSize().y / 2 - intermediateText.getLocalBounds().height / 2
+                );
+                hardText.setPosition(
+                    hardButton.getPosition().x + hardButton.getSize().x / 2 - hardText.getLocalBounds().width / 2,
+                    hardButton.getPosition().y + hardButton.getSize().y / 2 - hardText.getLocalBounds().height / 2
+                );
+                backText.setPosition(
+                    backButton.getPosition().x + backButton.getSize().x / 2 - backText.getLocalBounds().width / 2,
+                    backButton.getPosition().y + backButton.getSize().y / 2 - backText.getLocalBounds().height / 2
+                );
+                // Recalculate positions for text elements
+                welcomeText.setPosition(
+                    (event.size.width - welcomeText.getLocalBounds().width) / 2,
+                    event.size.height * 0.09f
+                );
+
+                explanationText.setPosition(
+                    (event.size.width - explanationText.getLocalBounds().width) / 2,
+                    event.size.height * 0.32f
+                );
+
+                explanatitonText2.setPosition(
+                    (event.size.width - explanatitonText2.getLocalBounds().width) / 2,
+                    event.size.height * 0.42f
+                );
+                maxHeapText.setPosition(
+                    maxHeap.getPosition().x + maxHeap.getSize().x / 2 - maxHeapText.getLocalBounds().width / 2,
+                    maxHeap.getPosition().y + maxHeap.getSize().y / 2 - maxHeapText.getLocalBounds().height / 2
+                );
+                minHeapText.setPosition(
+                    minHeap.getPosition().x + minHeap.getSize().x / 2 - minHeapText.getLocalBounds().width / 2,
+                    minHeap.getPosition().y + minHeap.getSize().y / 2 - minHeapText.getLocalBounds().height / 2
+                );
+                sf::Text& currentSongText = songText;
+                currentSongText.setPosition(
+                    event.size.width / 2.0f - currentSongText.getLocalBounds().width / 2.0f,
+                    event.size.height / 2.0f - currentSongText.getLocalBounds().height / 2.0f + scrollOffset);
+            }
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
@@ -234,7 +341,7 @@ int main() {
                     }
                 }
 
-                // Difficulty-specific heap buttons
+                // Difficulty-specific heap buttons ---------
                 if (currentState == State::Easy) {
                     if (minHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                         currentState = State::EasyMinHeap;
@@ -255,14 +362,36 @@ int main() {
                     }
                 }
             }
+            if (event.type == sf::Event::MouseWheelScrolled) {
+
+                if (event.mouseWheelScroll.delta > 0) {
+                    scrollOffset += scrollSpeed;
+                } else if (event.mouseWheelScroll.delta < 0) {
+                    scrollOffset -= scrollSpeed;
+                }
+            }
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Up) {
+                    scrollOffset += scrollSpeed;
+                } else if (event.key.code == sf::Keyboard::Down) {
+                    scrollOffset -= scrollSpeed;
+                }
+            }
         }
+
+        // Constrain the scroll offset
+        float contentHeight = songText.getLocalBounds().height;
+        float windowHeight = window.getSize().y;
+        float maxScrollOffset = std::max(0.0f, contentHeight - windowHeight + 200);
+
+        scrollOffset = std::clamp(scrollOffset, -maxScrollOffset, 0.0f);
 
         // Drawing Logic
         window.clear(sf::Color::White);
         if (currentState == State::Menu) {
+            songText.setString("");
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(welcomeText);
             window.draw(explanationText);
             window.draw(explanatitonText2);
@@ -275,51 +404,91 @@ int main() {
         }
         else if (currentState == State::EasyMinHeap) {
             // EASY MIN HEAP LOGIC
+            songText.setString(EasyMinHeap);
+            songText.setCharacterSize(40);
+            songText.setFont(buttonfont);
+            songText.setFillColor(sf::Color::White);
+            songText.setStyle(sf::Text::Bold);
+            songText.setPosition(500, 150 + scrollOffset);
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
+            window.draw(songText);
         }
         else if (currentState == State::EasyMaxHeap) {
             // EASY MAX HEAP LOGIC
+            songText.setString(EasyMaxHeap);
+            songText.setCharacterSize(40);
+            songText.setFont(buttonfont);
+            songText.setFillColor(sf::Color::White);
+            songText.setStyle(sf::Text::Bold);
+            songText.setPosition(500, 150 + scrollOffset);
+
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
+            window.draw(songText);
         }
         else if (currentState == State::IntermediateMinHeap) {
             // INTERMEDIATE MIN HEAP LOGIC
+            songText.setString(IntermediateMinHeap);
+            songText.setCharacterSize(40);
+            songText.setFont(buttonfont);
+            songText.setFillColor(sf::Color::White);
+            songText.setStyle(sf::Text::Bold);
+            songText.setPosition(500, 150 + scrollOffset);
+
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
+            window.draw(songText);
         }
         else if (currentState == State::IntermediateMaxHeap) {
             // INTERMEDIATE MAX HEAP LOGIC
+            songText.setString(IntermediateMaxHeap);
+            songText.setCharacterSize(40);
+            songText.setFont(buttonfont);
+            songText.setFillColor(sf::Color::White);
+            songText.setStyle(sf::Text::Bold);
+            songText.setPosition(500, 150 + scrollOffset);
+
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
+            window.draw(songText);
         }
         else if (currentState == State::HardMinHeap) {
             // HARD MIN HEAP LOGIC
+            songText.setString(HardMinHeap);
+            songText.setCharacterSize(40);
+            songText.setFont(buttonfont);
+            songText.setFillColor(sf::Color::White);
+            songText.setStyle(sf::Text::Bold);
+            songText.setPosition(window.getSize().x / 2.0f - songText.getLocalBounds().width / 2.0f, window.getSize().y / 2.0f - songText.getLocalBounds().height / 2.0f + scrollOffset);
+
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
+            window.draw(songText);
         }
         else if (currentState == State::HardMaxHeap) {
             // HARD MAX HEAP LOGIC
+            songText.setString(HardMaxHeap);
+            songText.setCharacterSize(40);
+            songText.setFont(buttonfont);
+            songText.setFillColor(sf::Color::White);
+            songText.setStyle(sf::Text::Bold);
+            songText.setPosition(window.getSize().x / 2.0f - songText.getLocalBounds().width / 2.0f, window.getSize().y / 2.0f - songText.getLocalBounds().height / 2.0f + scrollOffset);
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
+            window.draw(songText);
         }
         else {
             window.draw(backgroundSprite1);
@@ -328,7 +497,6 @@ int main() {
             window.draw(minHeap);
             window.draw(maxHeapText);
             window.draw(minHeapText);
-            window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
 
@@ -340,24 +508,6 @@ int main() {
                 case State::Hard: difficulty = "Hard"; break;
                 default: break;
             }
-            //
-            // float yOffset = 150;
-            // if (midiCollection.difficultyLevel.find(difficulty) != midiCollection.difficultyLevel.end()) {
-            //     auto songs = midiCollection.difficultyLevel[difficulty];
-            //     std::sort(songs.begin(), songs.end(), [](const auto& a, const auto& b) {
-            //         return a.second < b.second;
-            //     });
-            //     for (const auto& song : songs) {
-            //         int tempo = midiCollection.getTempo(song.first);
-            //         std::string songInfo = song.first + " (Rank: " + std::to_string(song.second) + ", Tempo: " + std::to_string(tempo) + ")";
-            //         sf::Text songText(songInfo, buttonfont, 20);
-            //         songText.setFillColor(sf::Color::Black);
-            //         songText.setPosition(50, yOffset);
-            //         window.draw(songText);
-            //         yOffset += 30;
-            //         if (yOffset > 1000) break;
-            //     }
-            // }
         }
 
         window.display();
