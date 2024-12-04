@@ -61,14 +61,13 @@ int main() {
     sf::Vector2f backgroundPosition(0, 0);
     sf::Vector2f nextBackgroundPosition(static_cast<float>(backgroundTexture.getSize().x), 0);
     float panSpeed = 50.0f;
-    
+
     // Generates Heap and Midi files
     std::string midiDir = "../resources/DATABASE";
     MidiCollection midiCollection(midiDir);
-    midiCollection.DifficultyLevel();
-    
+
     // States
-    enum class State { Menu, Easy, Intermediate, Hard };
+    enum class State { Menu, Easy, Intermediate, Hard, EasyMaxHeap, EasyMinHeap, IntermediateMinHeap, IntermediateMaxHeap, HardMaxHeap, HardMinHeap };
     State currentState = State::Menu;
 
     // Window dimensions
@@ -124,7 +123,7 @@ int main() {
         minHeap.getPosition().x + minHeap.getSize().x / 2 - minHeapText.getLocalBounds().width / 2,
         minHeap.getPosition().y + minHeap.getSize().y / 2 - minHeapText.getLocalBounds().height / 2 - 15
     );
-    
+
     welcomeText.setPosition(373, 100);
     explanationText.setPosition(501,350);
     explanatitonText2.setPosition(386,450);
@@ -177,7 +176,7 @@ int main() {
         }
 
         sf::Time deltaTime = clock.restart();
-        
+
         // Background Panning
         backgroundPosition.x += panSpeed * deltaTime.asSeconds();
         nextBackgroundPosition.x += panSpeed * deltaTime.asSeconds();
@@ -218,6 +217,13 @@ int main() {
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+                // Global back button handling
+                if (backButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                    currentState = State::Menu;
+                }
+
+                // Main menu buttons
                 if (currentState == State::Menu) {
                     if (easyButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                         currentState = State::Easy;
@@ -226,8 +232,27 @@ int main() {
                     } else if (hardButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                         currentState = State::Hard;
                     }
-                } else if (backButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
-                    currentState = State::Menu;
+                }
+
+                // Difficulty-specific heap buttons
+                if (currentState == State::Easy) {
+                    if (minHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        currentState = State::EasyMinHeap;
+                    } else if (maxHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        currentState = State::EasyMaxHeap;
+                    }
+                } else if (currentState == State::Intermediate) {
+                    if (minHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        currentState = State::IntermediateMinHeap;
+                    } else if (maxHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        currentState = State::IntermediateMaxHeap;
+                    }
+                } else if (currentState == State::Hard) {
+                    if (minHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        currentState = State::HardMinHeap;
+                    } else if (maxHeap.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        currentState = State::HardMaxHeap;
+                    }
                 }
             }
         }
@@ -247,7 +272,56 @@ int main() {
             window.draw(easyText);
             window.draw(intermediateText);
             window.draw(hardText);
-        } else {
+        }
+        else if (currentState == State::EasyMinHeap) {
+            // EASY MIN HEAP LOGIC
+            window.draw(backgroundSprite1);
+            window.draw(backgroundSprite2);
+            window.draw(fadeOverlay);
+            window.draw(backButton);
+            window.draw(backText);
+        }
+        else if (currentState == State::EasyMaxHeap) {
+            // EASY MAX HEAP LOGIC
+            window.draw(backgroundSprite1);
+            window.draw(backgroundSprite2);
+            window.draw(fadeOverlay);
+            window.draw(backButton);
+            window.draw(backText);
+        }
+        else if (currentState == State::IntermediateMinHeap) {
+            // INTERMEDIATE MIN HEAP LOGIC
+            window.draw(backgroundSprite1);
+            window.draw(backgroundSprite2);
+            window.draw(fadeOverlay);
+            window.draw(backButton);
+            window.draw(backText);
+        }
+        else if (currentState == State::IntermediateMaxHeap) {
+            // INTERMEDIATE MAX HEAP LOGIC
+            window.draw(backgroundSprite1);
+            window.draw(backgroundSprite2);
+            window.draw(fadeOverlay);
+            window.draw(backButton);
+            window.draw(backText);
+        }
+        else if (currentState == State::HardMinHeap) {
+            // HARD MIN HEAP LOGIC
+            window.draw(backgroundSprite1);
+            window.draw(backgroundSprite2);
+            window.draw(fadeOverlay);
+            window.draw(backButton);
+            window.draw(backText);
+        }
+        else if (currentState == State::HardMaxHeap) {
+            // HARD MAX HEAP LOGIC
+            window.draw(backgroundSprite1);
+            window.draw(backgroundSprite2);
+            window.draw(fadeOverlay);
+            window.draw(backButton);
+            window.draw(backText);
+        }
+        else {
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
             window.draw(maxHeap);
