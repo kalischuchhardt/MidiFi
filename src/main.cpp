@@ -7,9 +7,12 @@
 #include "Heap.cpp"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Piano Song Difficulty Ranking");
-    sf::Font font;
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "MidiFi");
+    sf::Font buttonfont;
+    sf::Font welcomefont;
+    sf::Font listfont;
     sf::Texture backgroundTexture;
+    sf::Image icon;
     backgroundTexture.setRepeated(true);
     sf::Sprite backgroundSprite1(backgroundTexture);
     sf::Sprite backgroundSprite2(backgroundTexture);
@@ -25,10 +28,22 @@ int main() {
         return 1;
     }
 
-    if (!font.loadFromFile("../resources/Milkyway.ttf")) {
+    if (!buttonfont.loadFromFile("../resources/KGMechanicallyMechanical.ttf")) {
         std::cerr << "Failed to load font" << std::endl;
         return 1;
     }
+
+    if (!welcomefont.loadFromFile("../resources/Ketchup Manis Demo.ttf")) {
+        std::cerr << "Failed to load font" << std::endl;
+        return 1;
+    }
+
+    if (!icon.loadFromFile("../resources/1175795.png")) {
+        std::cerr << "Failed to load font" << std::endl;
+        return 1;
+    }
+
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     sf::Vector2f backgroundPosition(0, 0);
     sf::Vector2f nextBackgroundPosition(static_cast<float>(backgroundTexture.getSize().x), 0);
@@ -48,7 +63,7 @@ int main() {
     // Button dimensions
     const float BUTTON_WIDTH = 310.0f;
     const float BUTTON_HEIGHT = 125.0f;
-    const float INTBUTTON_WIDTH = 350.0f;
+    const float INTBUTTON_WIDTH = 480.0f;
 
     // Calculate positions
     float windowCenterX = WINDOW_WIDTH / 2.0f;
@@ -59,51 +74,80 @@ int main() {
     sf::RectangleShape intermediateButton;
     sf::RectangleShape hardButton;
     sf::RectangleShape backButton;
+    sf::RectangleShape maxHeap;
+    sf::RectangleShape minHeap;
 
-    sf::Text easyText("Easy", font, 55);
-    sf::Text intermediateText("Intermediate", font, 55);
-    sf::Text hardText("Hard", font, 55);
-    sf::Text backText("Back", font, 24);
-    sf::Text welcomeText("Welcome", font, 24);
+    sf::Text easyText("Easy", buttonfont, 55);
+    sf::Text intermediateText("Intermediate", buttonfont, 55);
+    sf::Text hardText("Hard", buttonfont, 55);
+    sf::Text backText("Back", buttonfont, 24);
+    sf::Text welcomeText("Welcome to MidiFi!", welcomefont, 135);
+    sf::Text explanationText("Please select which Midi", welcomefont, 75);
+    sf::Text explanatitonText2("difficulty you would like to look at", welcomefont, 70);
+    sf::Text maxHeapText("Highest to Lowest (Max Heap)", buttonfont, 50);
+    sf::Text minHeapText("Lowest to Highest (Min Heap)", buttonfont, 50);
 
     // Set button positions
     easyButton.setSize(sf::Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
     intermediateButton.setSize(sf::Vector2f(INTBUTTON_WIDTH, BUTTON_HEIGHT));
     hardButton.setSize(sf::Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
+    maxHeap.setSize(sf::Vector2f(1000,100));
+    minHeap.setSize(sf::Vector2f(1000,100));;
 
     easyButton.setPosition(windowCenterX - buttonSpacing - BUTTON_WIDTH, buttonY);
     intermediateButton.setPosition(windowCenterX - INTBUTTON_WIDTH / 2, buttonY);
     hardButton.setPosition(windowCenterX + buttonSpacing, buttonY);
+    maxHeap.setPosition(450, 400);
+    minHeap.setPosition(450, 553);
 
     // Set text positions
-    float textY = buttonY + BUTTON_HEIGHT / 2;
     easyText.setPosition(
-        easyButton.getPosition().x + BUTTON_WIDTH / 2 - easyText.getLocalBounds().width / 2,
-        textY - easyText.getLocalBounds().height / 2
+        easyButton.getPosition().x + easyButton.getSize().x / 2 - easyText.getLocalBounds().width / 2,
+        easyButton.getPosition().y + easyButton.getSize().y / 2 - easyText.getLocalBounds().height / 2 - 15
     );
     intermediateText.setPosition(
-        intermediateButton.getPosition().x + INTBUTTON_WIDTH / 2 - intermediateText.getLocalBounds().width / 2,
-        textY - intermediateText.getLocalBounds().height / 2
+        intermediateButton.getPosition().x + intermediateButton.getSize().x / 2 - intermediateText.getLocalBounds().width / 2,
+        intermediateButton.getPosition().y + intermediateButton.getSize().y / 2 - intermediateText.getLocalBounds().height / 2 - 15
     );
     hardText.setPosition(
-        hardButton.getPosition().x + BUTTON_WIDTH / 2 - hardText.getLocalBounds().width / 2,
-        textY - hardText.getLocalBounds().height / 2
+        hardButton.getPosition().x + hardButton.getSize().x / 2 - hardText.getLocalBounds().width / 2,
+        hardButton.getPosition().y + hardButton.getSize().y / 2 - hardText.getLocalBounds().height / 2 - 15
     );
+
+    maxHeapText.setPosition(
+        maxHeap.getPosition().x + maxHeap.getSize().x / 2 - maxHeapText.getLocalBounds().width / 2,
+        maxHeap.getPosition().y + maxHeap.getSize().y / 2 - maxHeapText.getLocalBounds().height / 2 - 15
+    );
+
+    minHeapText.setPosition(
+        minHeap.getPosition().x + minHeap.getSize().x / 2 - minHeapText.getLocalBounds().width / 2,
+        minHeap.getPosition().y + minHeap.getSize().y / 2 - minHeapText.getLocalBounds().height / 2 - 15
+    );
+
+
+    welcomeText.setPosition(373, 100);
+    explanationText.setPosition(501,350);
+    explanatitonText2.setPosition(386,450);
 
     // Back button positioning
     backButton.setSize(sf::Vector2f(100, 50));
     backButton.setPosition(20, 20);
     backText.setPosition(backButton.getPosition().x + backButton.getSize().x / 2 - backText.getLocalBounds().width / 2,
-                         backButton.getPosition().y + backButton.getSize().y / 2 - backText.getLocalBounds().height / 2);
+                         backButton.getPosition().y + backButton.getSize().y / 2 - backText.getLocalBounds().height / 2 - 10);
 
     easyText.setFillColor(sf::Color::Black);
     intermediateText.setFillColor(sf::Color::Black);
     hardText.setFillColor(sf::Color::Black);
+    backText.setFillColor(sf::Color::Black);
+    maxHeapText.setFillColor(sf::Color::Black);
+    minHeapText.setFillColor(sf::Color::Black);
 
     easyButton.setFillColor(sf::Color::White);
     intermediateButton.setFillColor(sf::Color::White);
     hardButton.setFillColor(sf::Color::White);
     backButton.setFillColor(sf::Color::White);
+    maxHeap.setFillColor(sf::Color::White);
+    minHeap.setFillColor(sf::Color::White);
 
     music.play();
     music.setLoop(true);
@@ -195,6 +239,9 @@ int main() {
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
             window.draw(fadeOverlay);
+            window.draw(welcomeText);
+            window.draw(explanationText);
+            window.draw(explanatitonText2);
             window.draw(easyButton);
             window.draw(intermediateButton);
             window.draw(hardButton);
@@ -204,6 +251,10 @@ int main() {
         } else {
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
+            window.draw(maxHeap);
+            window.draw(minHeap);
+            window.draw(maxHeapText);
+            window.draw(minHeapText);
             window.draw(fadeOverlay);
             window.draw(backButton);
             window.draw(backText);
@@ -215,24 +266,24 @@ int main() {
                 case State::Hard: difficulty = "Hard"; break;
                 default: break;
             }
-
-            float yOffset = 150;
-            if (midiCollection.difficultyLevel.find(difficulty) != midiCollection.difficultyLevel.end()) {
-                auto songs = midiCollection.difficultyLevel[difficulty];
-                std::sort(songs.begin(), songs.end(), [](const auto& a, const auto& b) {
-                    return a.second < b.second;
-                });
-                for (const auto& song : songs) {
-                    int tempo = midiCollection.getTempo(song.first);
-                    std::string songInfo = song.first + " (Rank: " + std::to_string(song.second) + ", Tempo: " + std::to_string(tempo) + ")";
-                    sf::Text songText(songInfo, font, 20);
-                    songText.setFillColor(sf::Color::Black);
-                    songText.setPosition(50, yOffset);
-                    window.draw(songText);
-                    yOffset += 30;
-                    if (yOffset > 1000) break;
-                }
-            }
+            //
+            // float yOffset = 150;
+            // if (midiCollection.difficultyLevel.find(difficulty) != midiCollection.difficultyLevel.end()) {
+            //     auto songs = midiCollection.difficultyLevel[difficulty];
+            //     std::sort(songs.begin(), songs.end(), [](const auto& a, const auto& b) {
+            //         return a.second < b.second;
+            //     });
+            //     for (const auto& song : songs) {
+            //         int tempo = midiCollection.getTempo(song.first);
+            //         std::string songInfo = song.first + " (Rank: " + std::to_string(song.second) + ", Tempo: " + std::to_string(tempo) + ")";
+            //         sf::Text songText(songInfo, buttonfont, 20);
+            //         songText.setFillColor(sf::Color::Black);
+            //         songText.setPosition(50, yOffset);
+            //         window.draw(songText);
+            //         yOffset += 30;
+            //         if (yOffset > 1000) break;
+            //     }
+            // }
         }
 
         window.display();
