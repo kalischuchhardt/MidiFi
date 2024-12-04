@@ -67,31 +67,37 @@ int main() {
     MidiCollection midiCollection(midiDir);
     Heap heap(midiDir);
 
+    heap.setType(HeapType::MIN);
     heap.insertIntoHeap("Easy");
     heap.buildMinHeap();
     std::string EasyMinHeap = heap.getAllSongInfo();
     heap.clearMinHeap();
 
+    heap.setType(HeapType::MAX);
     heap.insertIntoHeap("Easy");
     heap.buildMaxHeap();
     std::string EasyMaxHeap = heap.getAllSongInfo();
     heap.clearMaxHeap();
 
+    heap.setType(HeapType::MIN);
     heap.insertIntoHeap("Intermediate");
     heap.buildMinHeap();
     std::string IntermediateMinHeap = heap.getAllSongInfo();
     heap.clearMinHeap();
 
+    heap.setType(HeapType::MAX);
     heap.insertIntoHeap("Intermediate");
     heap.buildMaxHeap();
     std::string IntermediateMaxHeap = heap.getAllSongInfo();
     heap.clearMaxHeap();
 
+    heap.setType(HeapType::MIN);
     heap.insertIntoHeap("Hard");
     heap.buildMinHeap();
     std::string HardMinHeap = heap.getAllSongInfo();
     heap.clearMinHeap();
 
+    heap.setType(HeapType::MAX);
     heap.insertIntoHeap("Hard");
     heap.buildMaxHeap();
     std::string HardMaxHeap = heap.getAllSongInfo();
@@ -405,11 +411,11 @@ int main() {
         else if (currentState == State::EasyMinHeap) {
             // EASY MIN HEAP LOGIC
             songText.setString(EasyMinHeap);
-            songText.setCharacterSize(40);
+            songText.setCharacterSize(30);
             songText.setFont(buttonfont);
             songText.setFillColor(sf::Color::White);
             songText.setStyle(sf::Text::Bold);
-            songText.setPosition(500, 150 + scrollOffset);
+            songText.setPosition(325, 150 + scrollOffset);
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
             window.draw(backButton);
@@ -419,11 +425,11 @@ int main() {
         else if (currentState == State::EasyMaxHeap) {
             // EASY MAX HEAP LOGIC
             songText.setString(EasyMaxHeap);
-            songText.setCharacterSize(40);
+            songText.setCharacterSize(30);
             songText.setFont(buttonfont);
             songText.setFillColor(sf::Color::White);
             songText.setStyle(sf::Text::Bold);
-            songText.setPosition(500, 150 + scrollOffset);
+            songText.setPosition(325, 150 + scrollOffset);
 
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
@@ -434,11 +440,11 @@ int main() {
         else if (currentState == State::IntermediateMinHeap) {
             // INTERMEDIATE MIN HEAP LOGIC
             songText.setString(IntermediateMinHeap);
-            songText.setCharacterSize(40);
+            songText.setCharacterSize(30);
             songText.setFont(buttonfont);
             songText.setFillColor(sf::Color::White);
             songText.setStyle(sf::Text::Bold);
-            songText.setPosition(500, 150 + scrollOffset);
+            songText.setPosition(325, 150 + scrollOffset);
 
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
@@ -449,11 +455,11 @@ int main() {
         else if (currentState == State::IntermediateMaxHeap) {
             // INTERMEDIATE MAX HEAP LOGIC
             songText.setString(IntermediateMaxHeap);
-            songText.setCharacterSize(40);
+            songText.setCharacterSize(30);
             songText.setFont(buttonfont);
             songText.setFillColor(sf::Color::White);
             songText.setStyle(sf::Text::Bold);
-            songText.setPosition(500, 150 + scrollOffset);
+            songText.setPosition(325, 150 + scrollOffset);
 
             window.draw(backgroundSprite1);
             window.draw(backgroundSprite2);
@@ -464,7 +470,7 @@ int main() {
         else if (currentState == State::HardMinHeap) {
             // HARD MIN HEAP LOGIC
             songText.setString(HardMinHeap);
-            songText.setCharacterSize(40);
+            songText.setCharacterSize(30);
             songText.setFont(buttonfont);
             songText.setFillColor(sf::Color::White);
             songText.setStyle(sf::Text::Bold);
@@ -479,7 +485,7 @@ int main() {
         else if (currentState == State::HardMaxHeap) {
             // HARD MAX HEAP LOGIC
             songText.setString(HardMaxHeap);
-            songText.setCharacterSize(40);
+            songText.setCharacterSize(30);
             songText.setFont(buttonfont);
             songText.setFillColor(sf::Color::White);
             songText.setStyle(sf::Text::Bold);
