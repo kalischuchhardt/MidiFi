@@ -2,6 +2,11 @@
 #include <string>
 #include "MidiCollection.cpp"
 
+enum HeapType {
+    MAX,
+    MIN
+};
+
 class Heap {
     public:
 
@@ -24,6 +29,7 @@ class Heap {
     private:
     MidiCollection midiCollection;
     vector<Song> heap;
+    HeapType type;
 
     void heapifyMax(vector<Song>& heap, int heapSize, int index) { // heapifies for max heap
         int largest = index;
@@ -67,8 +73,12 @@ class Heap {
     }
 
 public:
-
     Heap(const string& dirPath) : midiCollection(dirPath) {
+        this->type = HeapType::MAX;
+    }
+
+    void setType(HeapType _type) {
+        this->type = _type;
     }
 
     void insertIntoHeap(string state) {
@@ -135,10 +145,12 @@ public:
             std::swap(heap[0], heap[heap.size() - 1]);
             heap.pop_back();
 
-            if ()
+            if (this->type == HeapType::MAX) {
+                this->heapifyMax(heap, heap.size(), 0);
+            } else {
+                this->heapifyMin(heap, heap.size(), 0);
+            }
         }
-
-
 
         // for (auto song : heap) {
         //     bigString += song.name + "   -   " + "Difficulty Score: "
@@ -160,14 +172,12 @@ public:
         for (auto song :heap) {
             heap.pop_back();
         };
-        heapifyMax();
     }
 
     void clearMinHeap() {
         for (auto song :heap) {
             heap.pop_back();
         };
-        heapifyMin();
     }
 
     vector<Song> getTopNSongs(int n, bool isMax) {
