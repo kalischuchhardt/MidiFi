@@ -47,6 +47,7 @@ public:
         for (size_t i = 0; i < parsedFiles.size(); i++) {
             int rank = parsedFiles[i].rank();
             string name = parsedFiles[i].getTrackName();
+            int tempo = parsedFiles[i].getTempo();
 
             if (rank <= 142) {
                 difficultyLevel["Easy"].emplace_back(name, rank);
