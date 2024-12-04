@@ -9,11 +9,12 @@ class Heap {
         int difficultyScore;
         string name;
         string level;
+        int tempo;
 
         Song() = default;
 
-        Song(int score, const string& trackName, const string& difficultyLevel)
-            : difficultyScore(score), name(trackName), level(difficultyLevel) {}
+        Song(int score, const string& trackName, const string& difficultyLevel, int tempo)
+            : difficultyScore(score), name(trackName), level(difficultyLevel), tempo(tempo) {}
 
         bool operator<(const Song& other) const {
             return difficultyScore < other.difficultyScore;
@@ -70,22 +71,40 @@ public:
     Heap(const string& dirPath) : midiCollection(dirPath) {
     }
 
-    void insertIntoHeap() {
+    void insertIntoHeap(string state) {
         midiCollection.DifficultyLevel(); // makes sure map is populated -- lowkey might not need
-        for (auto level : midiCollection.difficultyLevel ) {
-            string difficultyLvl = level.first;
-            vector<pair<string, int>> songs = level.second;
-            Song song;
+        Song song;
+        vector<pair<string, int>> songs = midiCollection.difficultyLevel[state];
 
-            for (auto songPair : songs) { // "EASY": {[ "Song", 100 ], ["Other", 120] ... } --- how actual thing looks
+        if (state == "Easy") {
+            // vector<pair<string, int>> songs = midiCollection.difficultyLevel[state] = {};
+            for (auto songPair : songs) {
                 song.difficultyScore = songPair.second; // number score
-                song.name = songPair.first;
-                song.level = difficultyLvl; // lvl (easy, med, whatever)
+                song.name = songPair.first; // song name
+                song.level = state;
 
                 heap.push_back(song);
-                // add more info for frontend ??
-                // might not need bc access song info by name or smth
             }
+        } else if (state == "Intermediate") {
+            // vector<pair<string, int>> songs = midiCollection.difficultyLevel[state] = {};
+            for (auto songPair : songs) {
+                song.difficultyScore = songPair.second; // number score
+                song.name = songPair.first; // song name
+                song.level = state;
+
+                heap.push_back(song);
+            }
+        } else if (state == "Hard"){
+            // vector<pair<string, int>> songs = midiCollection.difficultyLevel[state] = {};
+            for (auto songPair : songs) {
+                song.difficultyScore = songPair.second; // number score
+                song.name = songPair.first; // song name
+                song.level = state;
+
+                heap.push_back(song);
+            }
+        } else {
+            cout << "something went wrong in the state thingy" << endl;
         }
     }
 
@@ -107,13 +126,26 @@ public:
 
     string getAllSongInfo() { // gets everything in the heap for frontend
         string bigString = "";
-        for (auto song : heap) {
-            bigString += song.name + " "
-                    + to_string(song.difficultyScore) + " "
-                    + song.level + ", "; // + to_string(song.tempo) + " " + song.key + ",";
-            // for front end parsing, each whole song separated by a comma,
-            // each bit of info per song separated by space
+        vector<Song> copyheap = this->heap;
+
+        while (heap.size() > 0) {
+            Song song = heap[0];
+            bigString += song.name + "   -   " + "Difficulty Score: "
+                    + to_string(song.difficultyScore) + "\n\n";
+            std::swap(heap[0], heap[heap.size() - 1]);
+            heap.pop_back();
+
+            if ()
         }
+
+
+
+        // for (auto song : heap) {
+        //     bigString += song.name + "   -   " + "Difficulty Score: "
+        //             + to_string(song.difficultyScore) + "\n\n";
+        //     // for front end parsing, each whole song separated by a comma,
+        //     // each bit of info per song separated by space
+        // }
         return bigString;
     }
 
@@ -122,6 +154,20 @@ public:
             return "Error: heap empty";
         }
         return heap.front().name;
+    }
+
+    void clearMaxHeap() {
+        for (auto song :heap) {
+            heap.pop_back();
+        };
+        heapifyMax();
+    }
+
+    void clearMinHeap() {
+        for (auto song :heap) {
+            heap.pop_back();
+        };
+        heapifyMin();
     }
 
     vector<Song> getTopNSongs(int n, bool isMax) {
